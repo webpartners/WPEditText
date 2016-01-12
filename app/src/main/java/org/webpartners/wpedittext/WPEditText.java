@@ -64,29 +64,29 @@ public class WPEditText extends LinearLayout implements TextWatcher {
 
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attributeSet,
-                R.styleable.wpedittext__style,
+                R.styleable.WPEditText,
                 0, 0);
 
         init();
 
         try {
             this.setupEditText(
-                    a.getResourceId(R.styleable.wpedittext__style_wpedittext__hint, R.string.wpedittext__sample_hint),
-                    a.getInteger(R.styleable.wpedittext__style_wpedittext__type, TYPE_ALPHANUMERIC),
-                    a.getInteger(R.styleable.wpedittext__style_wpedittext__min_length, 8),
-                    a.getBoolean(R.styleable.wpedittext__style_wpedittext__editable, true)
+                    a.getResourceId(R.styleable.WPEditText_hint, R.string.wpedittext__sample_hint),
+                    a.getInteger(R.styleable.WPEditText_type, TYPE_ALPHANUMERIC),
+                    a.getInteger(R.styleable.WPEditText_min_length, 8),
+                    a.getBoolean(R.styleable.WPEditText_editable, true)
             );
             this.textColors(
-                    a.getResourceId(R.styleable.wpedittext__style_wpedittext__text_color, android.R.color.black),
-                    a.getResourceId(R.styleable.wpedittext__style_wpedittext__hint_color, android.R.color.darker_gray)
+                    a.getResourceId(R.styleable.WPEditText_text_color,  android.R.color.black),
+                    a.getResourceId(R.styleable.WPEditText_hint_color, android.R.color.darker_gray)
             );
             this.validationText(
-                    a.getString(R.styleable.wpedittext__style_wpedittext__valid_message),
-                    a.getString(R.styleable.wpedittext__style_wpedittext__invalid_message),
-                    a.getString(R.styleable.wpedittext__style_wpedittext__empty_message)
+                    a.getString(R.styleable.WPEditText_valid_message),
+                    a.getString(R.styleable.WPEditText_invalid_message),
+                    a.getString(R.styleable.WPEditText_empty_message)
             );
             this.icon(a.getResourceId(
-                    R.styleable.wpedittext__style_wpedittext__header_icon,
+                    R.styleable.WPEditText_header_icon,
                     android.R.drawable.ic_dialog_info)
             );
         } finally {
