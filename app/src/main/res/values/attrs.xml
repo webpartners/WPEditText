@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <declare-styleable name="wpedittext__style">
-        <attr name="wpedittext__hint" format="reference"/>
-        <attr name="wpedittext__min_length" format="integer"/>
-        <attr name="wpedittext__valid_message" format="reference"/>
-        <attr name="wpedittext__invalid_message" format="reference"/>
-        <attr name="wpedittext__empty_message" format="reference"/>
-        <attr name="wpedittext__underline_color" format="reference"/>
-        <attr name="wpedittext__text_color" format="reference"/>
-        <attr name="wpedittext__hint_color" format="reference"/>
-        <attr name="wpedittext__header_icon" format="reference"/>
-        <attr name="wpedittext__type" format="enum">
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- We want these resources exported so they have not been prefixed with wpedittext__-->
+    <declare-styleable name="WPEditText" tools:ignore="ResourceName">
+        <attr name="hint" format="reference"/>
+        <attr name="min_length" format="integer"/>
+        <attr name="valid_message" format="reference"/>
+        <attr name="invalid_message" format="reference"/>
+        <attr name="empty_message" format="reference"/>
+        <attr name="underline_color" format="reference"/>
+        <attr name="text_color" format="reference"/>
+        <attr name="hint_color" format="reference"/>
+        <attr name="header_icon" format="reference"/>
+        <attr name="editable" format="boolean"/>
+        <attr name="type" format="enum">
             <enum name="alpha" value="0"/>
             <enum name="alphanumeric" value="1"/>
             <enum name="email" value="2"/>
             <enum name="password" value="3"/>
+            <enum name="numeric" value="4"/>
+            <enum name="numericWithSpace" value="5"/>
+            <enum name="numericWithSpaceAndPlus" value="6"/>
         </attr>
     </declare-styleable>
 </resources>

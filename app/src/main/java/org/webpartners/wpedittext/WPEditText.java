@@ -2,9 +2,12 @@ package org.webpartners.wpedittext;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.ColorRes;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.text.method.KeyListener;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +25,9 @@ public class WPEditText extends LinearLayout implements TextWatcher {
     public static final int TYPE_ALPHANUMERIC = 1;
     public static final int TYPE_EMAIL = 2;
     public static final int TYPE_PASSWORD = 3;
+    public static final int TYPE_NUMERIC = 4;
+    public static final int TYPE_NUMERIC_WITH_SPACE = 5;
+    public static final int TYPE_NUMERIC_WITH_SPACE_AND_PLUS = 6;
 
     private Context context;
 
@@ -39,8 +45,12 @@ public class WPEditText extends LinearLayout implements TextWatcher {
     private final String alphaPattern= "^[a-z\\sA-Z]*$";
     private final String alphaNumericPattern= "^[a-z\\sA-Z0-9]*$";
     private final String emailPattern= "^(.+)@([^@]+[^.])$";
+    private final String numeric= "^[0-9]*$";
+    private final String numericWithSpacePattern= "^[\\s0-9]*$";
+    private final String numericWithSpaceAndPlusPattern= "^[\\s0-9+]*$";
 
     private boolean ok = false;
+    private KeyListener cachedKeyListener;
 
     public WPEditText(Context context) {
         super(context);
@@ -54,28 +64,29 @@ public class WPEditText extends LinearLayout implements TextWatcher {
 
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attributeSet,
-                R.styleable.wpedittext__style,
+                R.styleable.WPEditText,
                 0, 0);
 
         init();
 
         try {
             this.setupEditText(
-                    a.getResourceId(R.styleable.wpedittext__style_wpedittext__hint, R.string.wpedittext__sample_hint),
-                    a.getInteger(R.styleable.wpedittext__style_wpedittext__type, TYPE_ALPHANUMERIC),
-                    a.getInteger(R.styleable.wpedittext__style_wpedittext__min_length, 8)
+                    a.getResourceId(R.styleable.WPEditText_hint, R.string.wpedittext__sample_hint),
+                    a.getInteger(R.styleable.WPEditText_type, TYPE_ALPHANUMERIC),
+                    a.getInteger(R.styleable.WPEditText_min_length, 8),
+                    a.getBoolean(R.styleable.WPEditText_editable, true)
             );
             this.textColors(
-                    a.getColor(R.styleable.wpedittext__style_wpedittext__text_color, android.R.color.black),
-                    a.getColor(R.styleable.wpedittext__style_wpedittext__hint_color, android.R.color.darker_gray)
+                    a.getResourceId(R.styleable.WPEditText_text_color,  android.R.color.black),
+                    a.getResourceId(R.styleable.WPEditText_hint_color, android.R.color.darker_gray)
             );
             this.validationText(
-                    a.getString(R.styleable.wpedittext__style_wpedittext__valid_message),
-                    a.getString(R.styleable.wpedittext__style_wpedittext__invalid_message),
-                    a.getString(R.styleable.wpedittext__style_wpedittext__empty_message)
+                    a.getString(R.styleable.WPEditText_valid_message),
+                    a.getString(R.styleable.WPEditText_invalid_message),
+                    a.getString(R.styleable.WPEditText_empty_message)
             );
             this.icon(a.getResourceId(
-                    R.styleable.wpedittext__style_wpedittext__header_icon,
+                    R.styleable.WPEditText_header_icon,
                     android.R.drawable.ic_dialog_info)
             );
         } finally {
@@ -109,17 +120,10 @@ public class WPEditText extends LinearLayout implements TextWatcher {
      * @param type A {@link} Type for validate entered text
      * @param minLength Min length (recommended for passwords)
      */
-    public void setupEditText(int hint, int type, int minLength) {
-        this.editText.setHint(hint);
-        this.type = type;
+    public void setupEditText(int hint, int type, int minLength, boolean editable) {
         this.minLength = minLength;
-
-        switch (type) {
-            case TYPE_PASSWORD:
-                this.editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                this.editText.setRawInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                break;
-        }
+        setEditable(editable);
+        setupEditText(hint, type);
     }
 
     /**
@@ -147,14 +151,26 @@ public class WPEditText extends LinearLayout implements TextWatcher {
         this.editText.setHint(hint);
     }
 
+    public  void setEditable(boolean editable) {
+        underline.setVisibility(editable ?  VISIBLE : INVISIBLE);
+        isValid.setVisibility(editable ?  VISIBLE : INVISIBLE);
+        if (!editable) {
+            this.cachedKeyListener = this.editText.getKeyListener();
+            this.editText.setKeyListener(null);
+        } else {
+            if (cachedKeyListener != null)
+                this.editText.setKeyListener(cachedKeyListener);
+        }
+    }
+
     /**
      * textColors: Set colors for texts and hints
      * @param textColor Resource id
      * @param hintColor Resource id
      */
-    public void textColors(int textColor, int hintColor) {
-        this.editText.setTextColor(context.getResources().getColor(textColor));
-        this.editText.setHintTextColor(context.getResources().getColor(hintColor));
+    public void textColors(@ColorRes int textColor, @ColorRes int hintColor) {
+        this.editText.setTextColor(ContextCompat.getColor(context, textColor));
+        this.editText.setHintTextColor(ContextCompat.getColor(context, hintColor));
     }
 
     /**
@@ -244,6 +260,15 @@ public class WPEditText extends LinearLayout implements TextWatcher {
             case TYPE_EMAIL:
                 this.ok = s.toString().matches(this.emailPattern);
                 break;
+            case TYPE_NUMERIC:
+                this.ok = s.toString().matches(this.numeric);
+                break;
+            case TYPE_NUMERIC_WITH_SPACE:
+                this.ok = s.toString().matches(this.numericWithSpacePattern);
+                break;
+            case TYPE_NUMERIC_WITH_SPACE_AND_PLUS:
+                this.ok = s.toString().matches(this.numericWithSpaceAndPlusPattern);
+                break;
         }
 
         if (minLength != -1 && s.length() < minLength) {
@@ -262,5 +287,9 @@ public class WPEditText extends LinearLayout implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable s) {}
+
+    public void addTextChangedListener(TextWatcher watcher) {
+        editText.addTextChangedListener(watcher);
+    }
 
 }

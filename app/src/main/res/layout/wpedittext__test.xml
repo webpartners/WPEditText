@@ -9,14 +9,14 @@
     <org.webpartners.wpedittext.WPEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        wp:wpedittext__hint="@string/wpedittext__sample_hint"
-        wp:wpedittext__type="alpha"
-        wp:wpedittext__min_length="8"
-        wp:wpedittext__valid_message="@string/wpedittext__validation_valid_field"
-        wp:wpedittext__invalid_message="@string/wpedittext__validation_invalid_field"
-        wp:wpedittext__empty_message="@string/wpedittext__validation_empty_field"
-        wp:wpedittext__text_color="@android:color/black"
-        wp:wpedittext__hint_color="@android:color/darker_gray"
-        wp:wpedittext__header_icon="@android:drawable/ic_dialog_info"/>
+        wp:hint="@string/wpedittext__sample_hint"
+        wp:type="alpha"
+        wp:min_length="8"
+        wp:valid_message="@string/wpedittext__validation_valid_field"
+        wp:invalid_message="@string/wpedittext__validation_invalid_field"
+        wp:empty_message="@string/wpedittext__validation_empty_field"
+        wp:text_color="@android:color/black"
+        wp:hint_color="@android:color/darker_gray"
+        wp:header_icon="@android:drawable/ic_dialog_info"/>
 
 </LinearLayout>
