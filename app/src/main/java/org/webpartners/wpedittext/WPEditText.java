@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.text.method.KeyListener;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,6 +50,7 @@ public class WPEditText extends LinearLayout implements TextWatcher {
     private final String numericWithSpaceAndPlusPattern= "^[\\s0-9+]*$";
 
     private boolean ok = false;
+    private KeyListener cachedKeyListener;
 
     public WPEditText(Context context) {
         super(context);
@@ -71,11 +73,12 @@ public class WPEditText extends LinearLayout implements TextWatcher {
             this.setupEditText(
                     a.getResourceId(R.styleable.wpedittext__style_wpedittext__hint, R.string.wpedittext__sample_hint),
                     a.getInteger(R.styleable.wpedittext__style_wpedittext__type, TYPE_ALPHANUMERIC),
-                    a.getInteger(R.styleable.wpedittext__style_wpedittext__min_length, 8)
+                    a.getInteger(R.styleable.wpedittext__style_wpedittext__min_length, 8),
+                    a.getBoolean(R.styleable.wpedittext__style_wpedittext__editable, true)
             );
             this.textColors(
-                    a.getColor(R.styleable.wpedittext__style_wpedittext__text_color, android.R.color.black),
-                    a.getColor(R.styleable.wpedittext__style_wpedittext__hint_color, android.R.color.darker_gray)
+                    a.getResourceId(R.styleable.wpedittext__style_wpedittext__text_color, android.R.color.black),
+                    a.getResourceId(R.styleable.wpedittext__style_wpedittext__hint_color, android.R.color.darker_gray)
             );
             this.validationText(
                     a.getString(R.styleable.wpedittext__style_wpedittext__valid_message),
@@ -117,17 +120,10 @@ public class WPEditText extends LinearLayout implements TextWatcher {
      * @param type A {@link} Type for validate entered text
      * @param minLength Min length (recommended for passwords)
      */
-    public void setupEditText(int hint, int type, int minLength) {
-        this.editText.setHint(hint);
-        this.type = type;
+    public void setupEditText(int hint, int type, int minLength, boolean editable) {
         this.minLength = minLength;
-
-        switch (type) {
-            case TYPE_PASSWORD:
-                this.editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                this.editText.setRawInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                break;
-        }
+        setEditable(editable);
+        setupEditText(hint, type);
     }
 
     /**
@@ -153,6 +149,18 @@ public class WPEditText extends LinearLayout implements TextWatcher {
      */
     public void setupEditText(String hint) {
         this.editText.setHint(hint);
+    }
+
+    public  void setEditable(boolean editable) {
+        underline.setVisibility(editable ?  VISIBLE : INVISIBLE);
+        isValid.setVisibility(editable ?  VISIBLE : INVISIBLE);
+        if (!editable) {
+            this.cachedKeyListener = this.editText.getKeyListener();
+            this.editText.setKeyListener(null);
+        } else {
+            if (cachedKeyListener != null)
+                this.editText.setKeyListener(cachedKeyListener);
+        }
     }
 
     /**
@@ -279,5 +287,9 @@ public class WPEditText extends LinearLayout implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable s) {}
+
+    public void addTextChangedListener(TextWatcher watcher) {
+        editText.addTextChangedListener(watcher);
+    }
 
 }
