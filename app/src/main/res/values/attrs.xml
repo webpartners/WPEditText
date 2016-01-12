@@ -10,11 +10,15 @@
         <attr name="wpedittext__text_color" format="reference"/>
         <attr name="wpedittext__hint_color" format="reference"/>
         <attr name="wpedittext__header_icon" format="reference"/>
+        <attr name="wpedittext__editable" format="boolean"/>
         <attr name="wpedittext__type" format="enum">
             <enum name="alpha" value="0"/>
             <enum name="alphanumeric" value="1"/>
             <enum name="email" value="2"/>
             <enum name="password" value="3"/>
+            <enum name="numeric" value="4"/>
+            <enum name="numericWithSpace" value="5"/>
+            <enum name="numericWithSpaceAndPlus" value="6"/>
         </attr>
     </declare-styleable>
 </resources>

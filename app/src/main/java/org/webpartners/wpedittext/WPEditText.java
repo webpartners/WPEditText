@@ -2,6 +2,8 @@ package org.webpartners.wpedittext;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.ColorRes;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -22,6 +24,9 @@ public class WPEditText extends LinearLayout implements TextWatcher {
     public static final int TYPE_ALPHANUMERIC = 1;
     public static final int TYPE_EMAIL = 2;
     public static final int TYPE_PASSWORD = 3;
+    public static final int TYPE_NUMERIC = 4;
+    public static final int TYPE_NUMERIC_WITH_SPACE = 5;
+    public static final int TYPE_NUMERIC_WITH_SPACE_AND_PLUS = 6;
 
     private Context context;
 
@@ -39,6 +44,9 @@ public class WPEditText extends LinearLayout implements TextWatcher {
     private final String alphaPattern= "^[a-z\\sA-Z]*$";
     private final String alphaNumericPattern= "^[a-z\\sA-Z0-9]*$";
     private final String emailPattern= "^(.+)@([^@]+[^.])$";
+    private final String numeric= "^[0-9]*$";
+    private final String numericWithSpacePattern= "^[\\s0-9]*$";
+    private final String numericWithSpaceAndPlusPattern= "^[\\s0-9+]*$";
 
     private boolean ok = false;
 
@@ -152,9 +160,9 @@ public class WPEditText extends LinearLayout implements TextWatcher {
      * @param textColor Resource id
      * @param hintColor Resource id
      */
-    public void textColors(int textColor, int hintColor) {
-        this.editText.setTextColor(context.getResources().getColor(textColor));
-        this.editText.setHintTextColor(context.getResources().getColor(hintColor));
+    public void textColors(@ColorRes int textColor, @ColorRes int hintColor) {
+        this.editText.setTextColor(ContextCompat.getColor(context, textColor));
+        this.editText.setHintTextColor(ContextCompat.getColor(context, hintColor));
     }
 
     /**
@@ -243,6 +251,15 @@ public class WPEditText extends LinearLayout implements TextWatcher {
                 break;
             case TYPE_EMAIL:
                 this.ok = s.toString().matches(this.emailPattern);
+                break;
+            case TYPE_NUMERIC:
+                this.ok = s.toString().matches(this.numeric);
+                break;
+            case TYPE_NUMERIC_WITH_SPACE:
+                this.ok = s.toString().matches(this.numericWithSpacePattern);
+                break;
+            case TYPE_NUMERIC_WITH_SPACE_AND_PLUS:
+                this.ok = s.toString().matches(this.numericWithSpaceAndPlusPattern);
                 break;
         }
 
